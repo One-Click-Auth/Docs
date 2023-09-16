@@ -7,7 +7,7 @@ import { Steps } from 'nextra/components'
 
 Make sure you have FastAPI and Trustauthx SDK installed. You can install them using pip:
 
-```bash
+```bash copy showLineNumbers
 pip install fastapi
 pip install trustauthx
 ```
@@ -17,7 +17,7 @@ Create a FastAPI Application
 
 Create a FastAPI application and configure it with Trustauthx. Make sure you replace "your_secret_key", "f28ffe7f2e4a47d6a796b0c2df073aeeAVVQBFSSCXIQWNQIEPBI", "8ad9741c8fd5a8f286fc34eba21e0871e63dff3dd67e3ea3a1b43077db9531f7", and "c3621ed40ccc4fca955779fab8f776c921e8865e439211ee88069dc8f7663e88" with your actual values.
 
-```python
+```python copy showLineNumbers filename="python"
 from fastapi import FastAPI, Depends, HTTPException, status, Response, Request
 from trustauthx.authlite import AuthLiteClient
 from starlette.middleware.sessions import SessionMiddleware
@@ -41,7 +41,7 @@ Define Authentication Middleware
 
 Create a function to handle authentication. This function will validate tokens and refresh them if necessary.
 
-```python
+```python copy showLineNumbers filename="python"
 async def auth_client():
     return auth_lite_client
 
@@ -67,7 +67,7 @@ Create Endpoints
 
 Define the endpoints that require authentication and use the Trustauthx SDK.
 
-```python
+```python copy showLineNumbers filename="python"
 @app.get("/")
 def root(client: AuthLiteClient = Depends(auth_client)):
     return RedirectResponse(client.generate_url())
@@ -96,7 +96,7 @@ Refresh Tokens
 
 Create an endpoint to refresh tokens.
 
-```python
+```python copy showLineNumbers filename="python"
 @app.get("/re-auth")
 def get_user(code: str, request: Request, client: AuthLiteClient = Depends(auth_client)):
     try:
@@ -113,7 +113,7 @@ Token Validation
 
 Implement an endpoint to validate access tokens.
 
-```python
+```python copy showLineNumbers filename="python"
 @app.get("/validate-token")
 async def validate_access_token(token_validator: AuthLiteClient = Depends(get_auth_)):
     return token_validator
@@ -124,7 +124,7 @@ Revoke Tokens
 
 Create endpoints to revoke tokens.
 
-```python
+```python copy showLineNumbers filename="python"
 async def revoketokens(request: Request, client: AuthLiteClient = Depends(auth_client)):
     try:
         return client.revoke_token(AccessToken=request.session.get("access_token"), revoke_all_tokens=True)
@@ -151,7 +151,7 @@ Run the FastAPI Application
 
 Finally, run the FastAPI application using Uvicorn.
 
-```python
+```python copy showLineNumbers filename="python"
 uvicorn.run(app=app, port=3535)
 ```
 
