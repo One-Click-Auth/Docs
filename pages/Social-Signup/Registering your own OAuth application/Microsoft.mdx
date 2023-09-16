@@ -1,0 +1,34 @@
+import { Steps } from 'nextra/components'
+
+<Steps>
+
+### Step 1: Create a Microsoft Azure Account 📝
+
+Before you can register an application, you need to have a **Microsoft Azure account**. If you don't have one, you can create it at the Azure portal.
+
+### Step 2: Register a New Application 🆕
+
+Navigate to the **Azure Active Directory** section in the Azure portal. Here, select **App registrations** and then click on **New registration**.
+
+### Step 3: Configure Your Application ⚙️
+
+You'll need to provide some details about your application:
+- **Name**: This is the name users will see.
+- **Supported account types**: Choose who can use the application.
+- **Redirect URI (optional)**: The URL where users will be sent after they authenticate with Microsoft.
+
+After filling in these details, click on the **Register** button.
+
+### Step 4: Get Your Application (Client) ID and Directory (Tenant) ID 🔑
+
+After your application is registered, Azure will provide you with a **Client ID** and **Directory (Tenant) ID**. Make sure to note these down as they will be used in your application's code.
+
+### Step 5: Generate a New Client Secret 🗝️
+
+In the same application overview page, navigate to **Certificates & secrets**. Click on **New client secret**, add a description, select an expiry period, and then click on **Add**. After it's created, make sure to copy the value of the client secret as it's not retrievable later.
+
+### Step 6: Set API Permissions 🛂
+
+Navigate to **API permissions** and click on **Add a permission**. Select the APIs and the specific permissions your app requires.
+
+</Steps>

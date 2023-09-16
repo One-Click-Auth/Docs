@@ -1,0 +1,35 @@
+import { Steps } from 'nextra/components'
+
+<Steps>
+
+### Step 1: Create a Google Cloud Platform (GCP) Project 📝
+
+Before you can register an application, you need to have a **Google Cloud Platform (GCP) project**. If you don't have one, you can create it at the Google Cloud Console.
+
+### Step 2: Enable the Google OAuth2.0 API 🚀
+
+Navigate to the **Library** section in the Google Cloud Console. Here, search for **OAuth2.0** and enable it for your project.
+
+### Step 3: Create OAuth2.0 Client ID 🆕
+
+Navigate to the **Credentials** section and click on **Create Credentials**. Select **OAuth client ID** from the dropdown.
+
+### Step 4: Configure Your OAuth Consent Screen ⚙️
+
+You'll need to configure your OAuth consent screen:
+- **Application name**: This is the name users will see.
+- **User support email**: The email displayed on the consent screen.
+- **Authorized domains**: Your application's domain.
+- **Application Homepage link**: The home page of your app.
+
+After filling in these details, click on the **Save** button.
+
+### Step 5: Get Your Client ID and Client Secret 🔑
+
+After your OAuth client ID is created, Google will provide you with a **Client ID** and **Client Secret**. Make sure to note these down as they will be used in your application's code.
+
+### Step 6: Set Authorized Redirect URIs 🌐
+
+In the same OAuth client ID page, set your **Authorized redirect URIs**. This is the URI where users will be redirected after they authenticate with Google.
+
+</Steps>
