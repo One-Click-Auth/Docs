@@ -2,28 +2,34 @@ import { Steps } from 'nextra/components'
 
 <Steps>
 
-### Step 1: Create a Discord Developer Application 📝
+### Step 1: Create a Figma Account 📝
 
-Before you can register an application, you need to have a **Discord Developer Application**. If you don't have one, you can create it at the Discord Developer Portal.
+Before you can register an application, you need to have a **Figma account**. If you don't have one, you can create it at the Figma website.
 
-### Step 2: Navigate to the OAuth2 Page 🚀
+### Step 2: Navigate to the Developer Settings 🚀
 
-In your application's settings, click on the **OAuth2** link on the left sidebar.
+In your Figma account settings, navigate to the **Developer Settings** section[^1^][1].
 
-### Step 3: Add a Redirect URL 🌐
+### Step 3: Register a New Plugin 🆕
 
-Click on **Add Redirect** and add the URL where you want Discord to redirect users after they authorize your application. This is typically your application's URL.
+Click on **New Plugin** and provide the necessary details about your plugin[^1^][1].
 
-### Step 4: Generate an OAuth2 URL 🔗
+### Step 4: Configure Your OAuth Consent Screen ⚙️
 
-Lower down on the page, you can find an **OAuth2 URL Generator** provided by Discord. Use this to create a URL for yourself with the necessary scopes.
+You'll need to configure your OAuth consent screen:
+- **Application name**: This is the name users will see.
+- **User support email**: The email displayed on the consent screen.
+- **Authorized domains**: Your application's domain.
+- **Application Homepage link**: The home page of your app[^1^][1].
+
+After filling in these details, click on the **Save** button[^1^][1].
 
 ### Step 5: Get Your Client ID and Client Secret 🔑
 
-Take note of the **client id** and **client secret** fields. Copy these values as they will be used in your application's code.
+After your plugin is registered, Figma will provide you with a **Client ID** and **Client Secret**. Make sure to note these down as they will be used in your application's code[^1^][1].
 
-### Step 6: Implement OAuth2 in Your Application 💻
+### Step 6: Set Authorized Redirect URIs 🌐
 
-Now that you have your OAuth2 URL, client ID, and client secret, you can implement OAuth2 in your application. You'll need to use these values to get an access token and refresh token from Discord.
+In the same plugin settings page, set your **Authorized redirect URIs**. This is the URI where users will be redirected after they authenticate with Figma[^1^][1].
 
 </Steps>
