@@ -64,11 +64,11 @@ const config: DocsThemeConfig = {
 
   footer: {
     text: (
-      <span className="items-center justify center">
+      <span className="items-center justify center mx-auto">
         Made with ❤ by the team at{" "}
         <a className="underline " href="https://github.com/One-Click-Auth/">
           @TrustAuthX.
-        </a>
+        </a>  
       </span>
     ),
   },
