@@ -64,7 +64,7 @@ const config: DocsThemeConfig = {
 
   footer: {
     text: (
-      <span>
+      <span className="items-center justify center">
         Made with ❤ by the team at{" "}
         <a className="underline " href="https://github.com/One-Click-Auth/">
           @TrustAuthX.
