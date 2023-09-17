@@ -5,8 +5,7 @@ import { Steps } from 'nextra/components'
 
 Make sure you have FastAPI and Trustauthx SDK installed. You can install them using pip:
 
-```bash copy showLineNumbers
-pip install fastapi
+```bash copy showLineNumbers filename="cmd"
 pip install trustauthx
 ```
 
@@ -33,7 +32,7 @@ auth_lite_client = AuthLiteClient(
 )
 ```
 
-### Step 3 🌐 Define Authentication Middleware
+### Step 3 🌐 Define Authentication Functions according to your needs
 
 Create a function to handle authentication. This function will validate tokens and refresh them if necessary.
 
@@ -76,7 +75,13 @@ def get_user(code: str, request: Request, client: AuthLiteClient = Depends(auth_
         return {"user": user}
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+```
 
+### Step 5 🐱‍🏍 Create endpoint to Update User data.
+
+This endpoint helps your user to access user management console.
+
+```python copy showLineNumbers filename="python"
 @app.get("/user-update")
 def get_user(request: Request, client: AuthLiteClient = Depends(auth_client)):
     try:
@@ -86,9 +91,9 @@ def get_user(request: Request, client: AuthLiteClient = Depends(auth_client)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 ```
 
-### Step 5 🔄 Refresh Tokens
+### Step 6 🔄 Re-Auth User after update
 
-Create an endpoint to refresh tokens.
+Create an endpoint to refresh tokens once user is again redirected to your website.
 
 ```python copy showLineNumbers filename="python"
 @app.get("/re-auth")
@@ -102,9 +107,9 @@ def get_user(code: str, request: Request, client: AuthLiteClient = Depends(auth_
         return RedirectResponse("http://127.0.0.1:3535/validate-token")
 ```
 
-### Step 6 🔒 Token Validation
+### Step 7 🔒 Token Validation
 
-Implement an endpoint to validate access tokens.
+Implement an endpoint to validate access tokens. (Just for check no serious need)
 
 ```python copy showLineNumbers filename="python"
 @app.get("/validate-token")
@@ -112,9 +117,9 @@ async def validate_access_token(token_validator: AuthLiteClient = Depends(get_au
     return token_validator
 ```
 
-### Step 7 🚫 Revoke Tokens
+### Step 8 🚫 Revoke Tokens
 
-Create endpoints to revoke tokens.
+Create endpoints to revoke tokens. It's like Sign-out only. 
 
 ```python copy showLineNumbers filename="python"
 async def revoketokens(request: Request, client: AuthLiteClient = Depends(auth_client)):
@@ -138,7 +143,7 @@ async def invalidate_access_token(r=Depends(revokeAccesstokens)):
     return r
 ```
 
-### Step 8 🚀 Run the FastAPI Application
+### Step 9 🚀 Run the FastAPI Application
 
 Finally, run the FastAPI application using Uvicorn.
 
@@ -146,7 +151,11 @@ Finally, run the FastAPI application using Uvicorn.
 uvicorn.run(app=app, port=3535)
 ```
 
-That's it! You've successfully integrated the Trustauthx SDK with FastAPI to handle authentication and token management. Your FastAPI application is now secured with Trustauthx🚀.
+### Step 10 🤗 Sit back and Relax
+
+Your FastAPI application is now secured with Trustauthx.
+
+That's it! You've successfully integrated the Trustauthx SDK 🚀 to handle authentication and token management. 
 </Steps>
 
 
