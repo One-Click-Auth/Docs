@@ -1,0 +1,156 @@
+# AuthLiteClient API Documentation
+
+Welcome to the documentation for the AuthLiteClient Python class! 🚀 This class empowers you to interact with various API endpoints for authentication and user management. We'll provide a detailed explanation of each API endpoint and guide you on how to construct requests and communicate with the API while emphasizing the role of the `jwt_encode` and `jwt_decode` functions.
+
+Let's explore each API endpoint step by step! 📚
+
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Initialization](#initialization)
+3. [Generate Authentication URL](#generate-authentication-url)
+4. [Generate Edit User URL](#generate-edit-user-url)
+5. [Re-authenticate User](#re-authenticate-user)
+6. [Get User Data](#get-user-data)
+7. [Get Access Token from Refresh Token](#get-access-token-from-refresh-token)
+8. [Validate Access Token](#validate-access-token)
+9. [Revoke Token](#revoke-token)
+10. [Validate Token Set](#validate-token-set)
+
+## 1. Introduction <a name="introduction"></a>
+
+The `AuthLiteClient` class facilitates interaction with various authentication and user management API endpoints provided by TrustAuthX.
+
+### Emoji Key
+- 🚀: Important
+- 🔐: Security
+- 📝: Note
+
+## 2. Initialization <a name="initialization"></a> 🔐
+
+To start using the AuthLiteClient, you must initialize it with your API and secret keys. These keys are vital for securing requests to TrustAuthX API endpoints.
+
+**How to Initialize AuthLiteClient:**
+```python
+from authx.authlite import AuthLiteClient
+
+# Initialize the AuthLiteClient
+client = AuthLiteClient(api_key="your_api_key", secret_key="your_secret_key", org_id="your_org_id")
+```
+
+- `api_key` (str): Your TrustAuthX API key.
+- `secret_key` (str): Your TrustAuthX secret key.
+- `org_id` (str): Your organization's ID (required for some operations).
+
+## 3. Generate Authentication URL <a name="generate-authentication-url"></a> 🚀
+
+You can generate an authentication URL for your organization using the `generate_url` method. This URL allows users to log in or register with TrustAuthX.
+
+**How to Generate Authentication URL:**
+```python
+auth_url = client.generate_url()
+```
+
+- `auth_url` (str): The generated authentication URL.
+
+## 4. Generate Edit User URL <a name="generate-edit-user-url"></a> 🚀
+
+The `generate_edit_user_url` method constructs a URL that enables users to edit their profile settings.
+
+**How to Generate Edit User URL:**
+```python
+access_token = "user_access_token"
+target_url = "target_url_for_redirection"
+edit_user_url = client.generate_edit_user_url(access_token, target_url)
+```
+
+- `access_token` (str): The user's access token.
+- `target_url` (str): The URL to which the user will be redirected after editing their profile.
+
+## 5. Re-authenticate User <a name="re-authenticate-user"></a> 🔐
+
+The `re_auth` method guides you through re-authenticating a user using a code obtained from TrustAuthX.
+
+**How to Re-authenticate a User:**
+```python
+reauth_code = "re-authentication_code"
+user_info = client.re_auth(reauth_code)
+```
+
+- `reauth_code` (str): The re-authentication code obtained from TrustAuthX.
+- `user_info` (dict): User information, including access and refresh tokens.
+
+## 6. Get User Data <a name="get-user-data"></a> 🚀
+
+Retrieve user data using the `get_user` method. It explains how to construct a request to validate the provided authentication token and obtain user information.
+
+**How to Get User Data:**
+```python
+user_token = "user_access_token"
+user_info = client.get_user(user_token)
+```
+
+- `user_token` (str): The user's authentication token.
+- `user_info` (dict): User information, including access and refresh tokens.
+
+## 7. Get Access Token from Refresh Token <a name="get-access-token-from-refresh-token"></a> 🚀
+
+Learn how to obtain a new access token using a refresh token with the `get_access_token_from_refresh_token` method.
+
+**How to Get Access Token from Refresh Token:**
+```python
+refresh_token = "user_refresh_token"
+new_tokens = client.get_access_token_from_refresh_token(refresh_token)
+```
+
+- `refresh_token` (str): The user's refresh token.
+- `new_tokens` (dict): New access and refresh tokens.
+
+## 8. Validate Access Token <a name="validate-access-token"></a> 🚀
+
+The `validate_access_token` method explains how to validate an access token's authenticity.
+
+**How to Validate Access Token:**
+```python
+access_token = "user_access_token"
+is_valid = client.validate_access_token(access_token)
+```
+
+- `access_token` (str): The access token to validate.
+- `is_valid` (bool): `True` if the token is valid; otherwise, `False`.
+
+## 9. Revoke Token <a name="revoke-token"></a> 🔐
+
+Learn how to revoke an access or refresh token using the `revoke_token` method.
+
+**How to Revoke a Token:**
+```python
+# Revoke an access token
+client.revoke_token(AccessToken="user_access_token")
+
+# Revoke a refresh token
+client.revoke_token(RefreshToken="user_refresh_token")
+
+# Revoke all tokens associated with the user
+client.revoke_token(AccessToken="user_access_token", revoke_all_tokens=True)
+```
+
+- `AccessToken` (str): The access token to revoke (optional).
+- `RefreshToken` (str): The refresh token to revoke (optional).
+- `revoke_all_tokens` (bool): Set to `True` to revoke all tokens associated with the user (optional).
+
+## 10. Validate Token Set <a name="validate-token-set"></a> 🔐
+
+The `validate_token_set` method demonstrates how to validate an access token and, if necessary, refresh it using a refresh token.
+
+**How to Validate Token Set:**
+```python
+access_token = "user_access_token"
+refresh_token = "user_refresh_token"
+token_check = client.validate_token_set(access_token, refresh_token)
+```
+
+- `access_token` (str): The user's access token.
+- `refresh_token` (str): The user's refresh token.
+- `token_check` (TokenCheck): An object containing the state, access token, and refresh token.
+
+That concludes our in-depth documentation for the `AuthLiteClient` class and its methods. Feel free to refer to this documentation while working with TrustAuthX APIs. If you have any questions or need further assistance, please don't hesitate to reach out. Happy coding! 🎉👨‍💻👩‍💻

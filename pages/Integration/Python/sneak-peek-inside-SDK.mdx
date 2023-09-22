@@ -1,0 +1,166 @@
+# AuthLiteClient SDK Documentation
+
+The AuthLiteClient SDK is a Python library designed to facilitate the integration of TrustAuthX authentication services into your applications. This SDK provides various functions to interact with TrustAuthX's authentication and user management APIs. This documentation provides a detailed explanation of the SDK's components and their usage.
+
+## Installation
+
+Before using the AuthLiteClient SDK, you need to install the required packages:
+
+```bash
+pip install requests jose
+```
+
+## Initialization
+
+To start using the AuthLiteClient SDK, you must first initialize an instance of the `AuthLiteClient` class. This class requires your API key, secret key, and optionally, your organization ID.
+
+```python
+from authx.authlite import AuthLiteClient
+
+api_key = "your_api_key"
+secret_key = "your_secret_key"
+org_id = "your_organization_id"  # Optional
+
+auth_client = AuthLiteClient(api_key, secret_key, org_id)
+```
+
+## JWT Encoding and Decoding
+
+The SDK uses JSON Web Tokens (JWT) for authentication and data exchange. Two important methods in the `AuthLiteClient` class handle JWT encoding and decoding:
+
+### `jwt_encode(key, data)`
+
+- Role: Encodes data into a JWT.
+- Parameters:
+  - `key`: The key used for JWT encoding (usually your secret key).
+  - `data`: The data to be encoded into the JWT.
+- Example:
+  ```python
+  jwt_token = auth_client.jwt_encode(secret_key, {"user_id": 123})
+  ```
+
+### `jwt_decode(key, data)`
+
+- Role: Decodes a JWT into a Python dictionary.
+- Parameters:
+  - `key`: The key used for JWT decoding (usually your secret key).
+  - `data`: The JWT to be decoded.
+- Example:
+  ```python
+  decoded_data = auth_client.jwt_decode(secret_key, jwt_token)
+  ```
+
+## API Functions
+
+The AuthLiteClient SDK provides several functions for interacting with TrustAuthX APIs. These functions are used for various authentication and user-related tasks.
+
+### `generate_url() -> str`
+
+- Role: Generates an authentication URL for the specified organization.
+- Returns: The authentication URL as a string.
+- Example:
+  ```python
+  auth_url = auth_client.generate_url()
+  ```
+
+### `generate_edit_user_url(access_token, url) -> str`
+
+- Role: Generates a URL to edit user settings.
+- Parameters:
+  - `access_token`: The user's access token.
+  - `url`: The URL to edit user settings.
+- Returns: The generated URL as a string.
+- Example:
+  ```python
+  edit_url = auth_client.generate_edit_user_url(user_access_token, "https://example.com/edit-settings")
+  ```
+
+### `re_auth(code)`
+
+- Role: Re-authenticates a user with a code.
+- Parameters:
+  - `code`: The re-authentication code.
+- Returns: A dictionary containing user information.
+- Example:
+  ```python
+  user_info = auth_client.re_auth(re_auth_code)
+  ```
+
+### `get_user(token) -> dict`
+
+- Role: Retrieves user data using an authentication token.
+- Parameters:
+  - `token`: The authentication token.
+- Returns: A dictionary containing user data.
+- Example:
+  ```python
+  user_data = auth_client.get_user(user_access_token)
+  ```
+
+### `get_user_data(AccessToken) -> dict`
+
+- Role: Retrieves user data using an access token.
+- Parameters:
+  - `AccessToken`: The user's access token.
+- Returns: A dictionary containing user data.
+- Example:
+  ```python
+  user_data = auth_client.get_user_data(user_access_token)
+  ```
+
+### `get_access_token_from_refresh_token(refresh_token)`
+
+- Role: Obtains a new access token using a refresh token.
+- Parameters:
+  - `refresh_token`: The user's refresh token.
+- Returns: A dictionary containing the new access token and refresh token.
+- Example:
+  ```python
+  new_tokens = auth_client.get_access_token_from_refresh_token(user_refresh_token)
+  ```
+
+### `validate_access_token(access_token) -> bool`
+
+- Role: Validates an access token.
+- Parameters:
+  - `access_token`: The access token to validate.
+- Returns: `True` if the access token is valid; otherwise, `False`.
+- Example:
+  ```python
+  is_valid = auth_client.validate_access_token(user_access_token)
+  ```
+
+### `revoke_token(AccessToken=None, RefreshToken=None, revoke_all_tokens=False) -> bool`
+
+- Role: Revokes an access token or refresh token.
+- Parameters:
+  - `AccessToken` (optional): The access token to revoke.
+  - `RefreshToken` (optional): The refresh token to revoke.
+  - `revoke_all_tokens` (default: `False`): Set to `True` to revoke all tokens associated with the user.
+- Returns: `True` if the token(s) were successfully revoked; otherwise, `False`.
+- Example:
+  ```python
+  is_revoked = auth_client.revoke_token(AccessToken=user_access_token)
+  ```
+
+### `validate_token_set(access_token, refresh_token) -> TokenCheck`
+
+- Role: Validates a pair of access and refresh tokens.
+- Parameters:
+  - `access_token`: The access token to validate.
+  - `refresh_token`: The refresh token to validate.
+- Returns: A `TokenCheck` object containing access and refresh token validation status.
+- Example:
+  ```python
+  token_check = auth_client.validate_token_set(user_access_token, user_refresh_token)
+  if token_check.state:
+      # Access token is valid
+      print(f"Access Token: {token_check.access}")
+  else:
+      # Access token is invalid, use the new access token
+      print(f"New Access Token: {token_check.access}")
+  ```
+
+## Conclusion
+
+This documentation provides a comprehensive guide to using the AuthLiteClient SDK for integrating TrustAuthX authentication services into your Python applications. You can use the provided functions to handle user authentication, access tokens, and user data retrieval seamlessly. If you have any questions or encounter issues while using the SDK, please refer to the TrustAuthX documentation or contact their support for further assistance. 🚀
