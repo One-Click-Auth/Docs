@@ -57,7 +57,7 @@ const config: DocsThemeConfig = {
   },
 
   chat: {
-    link: "https://discord.gg/5wAVfW8c",
+    link: "https://discord.gg/dRYms4x5b6",
   },
 
   docsRepositoryBase: "https://github.com/One-Click-Auth/Docs/tree/main/",
