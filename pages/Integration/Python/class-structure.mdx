@@ -1,0 +1,156 @@
+Sure, here's a detailed documentation for the provided `AuthLiteClient` class and its methods:
+
+# AuthLiteClient Documentation
+
+## Overview
+
+The `AuthLiteClient` is a Python class designed to interact with the TrustAuthX authentication service. It provides methods for generating authentication URLs, validating tokens, and managing user authentication sessions. This documentation will explain the class structure and the purpose of each method.
+
+## Class Structure
+
+The `AuthLiteClient` class is structured as follows:
+
+```python
+class AuthLiteClient:
+    class TokenCheck:
+        access: str
+        refresh: str
+        state: bool
+
+    def __init__(self, api_key, secret_key, org_id=None):
+    def generate_url(self) -> str:
+    def generate_edit_user_url(self, access_token, url) -> str:
+    def re_auth(self, code):
+    def get_user(self, token) -> dict:
+    def get_user_data(self, AccessToken) -> dict:
+    def get_access_token_from_refresh_token(self, refresh_token):
+    def validate_access_token(self, access_token) -> bool:
+    def revoke_token(self, AccessToken=None, RefreshToken=None, revoke_all_tokens=False) -> bool:
+    def validate_token_set(self, access_token, refresh_token) -> TokenCheck:
+```
+
+## Constructor `__init__(self, api_key, secret_key, org_id=None)`
+
+**Purpose**: Initializes an instance of the `AuthLiteClient` class.
+
+**Parameters**:
+- `api_key` (str): The API key used for authentication.
+- `secret_key` (str): The secret key used for token signing.
+- `org_id` (str, optional): The organization ID for generating authentication URLs. If provided, the `generate_url` method can be used.
+
+## Method `generate_url(self) -> str`
+
+**Purpose**: Generates an authentication URL for the given organization.
+
+**Returns**: A string containing the authentication URL.
+
+**Raises**:
+- `ValueError`: If `org_id` was not provided during initialization.
+
+## Method `generate_edit_user_url(self, access_token, url) -> str`
+
+**Purpose**: Generates an authentication URL for editing a user's settings.
+
+**Parameters**:
+- `access_token` (str): The access token of the user.
+- `url` (str): The URL to redirect the user after editing settings.
+
+**Returns**: A string containing the authentication URL for editing user settings.
+
+## Method `re_auth(self, code)`
+
+**Purpose**: Re-authenticates a user using a code received from the TrustAuthX service.
+
+**Parameters**:
+- `code` (str): The code received from the authentication service.
+
+**Returns**: A dictionary containing user information.
+
+**Raises**:
+- `HTTPError`: If the request to the TrustAuthX service fails.
+
+## Method `get_user(self, token) -> dict`
+
+**Purpose**: Validates a user's authentication token and retrieves user information.
+
+**Parameters**:
+- `token` (str): The authentication token to validate.
+
+**Returns**: A dictionary containing user information.
+
+**Raises**:
+- `HTTPError`: If the request to the TrustAuthX service fails.
+
+## Method `get_user_data(self, AccessToken) -> dict`
+
+**Purpose**: Retrieves user data using an access token.
+
+**Parameters**:
+- `AccessToken` (str): The access token.
+
+**Returns**: A dictionary containing user data.
+
+**Raises**:
+- `HTTPError`: If the request to the TrustAuthX service fails.
+
+## Method `get_access_token_from_refresh_token(self, refresh_token)`
+
+**Purpose**: Retrieves an access token from a refresh token.
+
+**Parameters**:
+- `refresh_token` (str): The refresh token.
+
+**Returns**: A dictionary containing access and refresh tokens.
+
+**Raises**:
+- `HTTPError`: If the request to the TrustAuthX service fails.
+
+## Method `validate_access_token(self, access_token) -> bool`
+
+**Purpose**: Validates an access token.
+
+**Parameters**:
+- `access_token` (str): The access token to validate.
+
+**Returns**: `True` if the access token is valid, `False` otherwise.
+
+## Method `revoke_token(self, AccessToken=None, RefreshToken=None, revoke_all_tokens=False) -> bool`
+
+**Purpose**: Revokes an access or refresh token.
+
+**Parameters**:
+- `AccessToken` (str, optional): The access token to revoke.
+- `RefreshToken` (str, optional): The refresh token to revoke.
+- `revoke_all_tokens` (bool): Set to `True` to revoke all tokens associated with the user.
+
+**Returns**: `True` if the token(s) were revoked successfully, `False` otherwise.
+
+**Raises**:
+- `AttributeError`: If neither `AccessToken` nor `RefreshToken` is provided.
+
+## Method `validate_token_set(self, access_token, refresh_token) -> TokenCheck`
+
+**Purpose**: Validates a set of access and refresh tokens.
+
+**Parameters**:
+- `access_token` (str): The access token to validate.
+- `refresh_token` (str): The refresh token to validate.
+
+**Returns**: An instance of the `TokenCheck` class with the following attributes:
+- `access` (str): The validated access token.
+- `refresh` (str): The validated refresh token.
+- `state` (bool): `True` if both tokens are valid, `False` if the access token is invalid.
+
+**Raises**:
+- `HTTPError`: If both tokens are invalid, indicating that the user needs to log in again.
+
+## Class `TokenCheck`
+
+This inner class is used for returning the result of token validation. It has the following attributes:
+- `access` (str): The validated access token.
+- `refresh` (str): The validated refresh token.
+- `state` (bool): `True` if both tokens are valid, `False` if the access token is invalid.
+
+---
+
+This documentation should provide you with a comprehensive understanding of the `AuthLiteClient` class and its methods, including their purpose, parameters, and possible exceptions. You can use this class to interact with the TrustAuthX authentication service in your Python applications.
