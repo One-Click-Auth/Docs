@@ -5,7 +5,9 @@
 
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
+  - package-ecosystem: "npm" # See documentation for possible values
+    # Raise pull requests to update vendored dependencies that are checked in to the repository
+    vendor: true
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
