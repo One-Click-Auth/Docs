@@ -1,7 +1,7 @@
 import cn from 'clsx'
 import Image from 'next/image'
 
-export function Screenshot({ src, alt, full }) {
+export function Screenshot ({ src, alt, full }) {
   return (
     <div
       className={cn(

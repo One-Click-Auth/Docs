@@ -4,14 +4,14 @@ import { Component } from 'react'
 import { createPortal } from 'react-dom'
 
 export class Shadow extends Component {
-  componentDidMount() {
+  componentDidMount () {
     if (this.shadowAttached) return
     this.shadowAttached = true
     this.shadowRoot = this.node.attachShadow({ mode: this.props.mode })
     this.forceUpdate()
   }
 
-  render() {
+  render () {
     const { children, ...rest } = this.props
     return (
       <div {...rest} ref={node => (this.node = node)}>
