@@ -1,5 +1,8 @@
 import React from "react";
 import { DocsThemeConfig } from "nextra-theme-docs";
+import { useRouter } from 'next/router'
+import { useConfig } from 'nextra-theme-docs'
+import { NextSeo } from 'next-seo';
 
 const config: DocsThemeConfig = {
   logo: (
@@ -57,7 +60,7 @@ const config: DocsThemeConfig = {
   },
 
   chat: {
-    link: "https://discord.gg/hsugFe3asG",
+    link: "https://discord.gg/KZ6QeMrfQT",
   },
 
   docsRepositoryBase: "https://github.com/One-Click-Auth/Docs/tree/main/",
@@ -82,9 +85,12 @@ const config: DocsThemeConfig = {
   },
 
   useNextSeoProps() {
-    return {
-      titleTemplate: "%s – TrustAuthX",
-    };
+    const { asPath } = useRouter()
+    if (asPath !== '/') {
+      return {
+        titleTemplate: '%s – SWR'
+      }
+    }
   },
 
   primaryHue: 83,
@@ -94,4 +100,26 @@ const config: DocsThemeConfig = {
   },
 };
 
-export default config;
+export default {
+  ...config,
+  head: () => {
+    const { asPath, defaultLocale, locale } = useRouter()
+    const { frontMatter } = useConfig()
+    const url =
+      'https://docs.trustauthx.com' +
+      (defaultLocale === locale ? asPath : `/${locale}${asPath}`)
+      
+    return (
+      <>
+        <link rel="icon" href="/favicon.ico" />
+        <meta property="og:url" content={url} />
+        <meta property="og:title" content={frontMatter.title || 'Trustauthx'} />
+        <meta
+          property="og:description"
+          content={frontMatter.description || 'Trustauthx Docs'}
+        />
+        <meta name="keywords" content="Trustauthx, Docs, Documentation, Guide, Tutorial, Trustauthx python, Auth0, clerk" />
+      </>
+    )
+  }
+}
