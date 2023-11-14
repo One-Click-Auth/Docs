@@ -107,7 +107,7 @@ const config: DocsThemeConfig = {
         )
       }
       if (title == 'Introduction') {
-        return <>{title} ❓ </>
+        return <>{title} 👋 </>
       }return <>{title}</>
     }
   }
