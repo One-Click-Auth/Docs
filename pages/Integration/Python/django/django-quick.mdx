@@ -1,0 +1,73 @@
+import { Steps } from 'nextra/components'
+
+# Quick Start with AI using TrustAuthX 🚀
+
+## Step 1: Set Up and Activate Virtual Environment (Highly Recommended) 🛠️✅
+
+```bash copy showLineNumbers filename="bash"
+py -m venv . 
+```
+
+<Steps>
+
+
+## Step 1: Install Django 📦
+
+To install Django, you can use the pip command. Pip is a package manager for Python. You can use it to install and manage your Python packages. Here's how you can install Django:
+
+```bash copy showLineNumbers filename="bash"
+pip install django
+```
+
+## Step 2: Start a Django Project 🚀
+
+Once Django is installed, you can start a new project using the django-admin command-line utility. Here's the command:
+
+```bash copy showLineNumbers filename="bash"
+django-admin startproject your_project_name
+```
+Replace `your_project_name` with the name you want to give to your project.
+
+## Step 3: Move to Your Project Directory 📂
+
+After creating the project, you need to navigate to your project directory. You can do this using the cd (change directory) command:
+
+```bash copy showLineNumbers filename="bash"
+cd your_project_name
+```
+Replace `your_project_name` with the name of your Django project.
+
+## Step 4: Install TrustAuthX 📦
+
+```bash copy showLineNumbers filename="bash"
+pip install trustauthx
+```
+
+## Step 5: Login to TrustAuthX 🔑
+
+```bash copy showLineNumbers filename="bash"
+trustauthx login me -k <API_KEY> -s <SECRET_KEY> -o <ORG_ID>
+```
+
+## Step 6: Generate a Django Project Structure 🏗️
+
+```bash copy showLineNumbers filename="bash"
+trustauthx neuroform django
+```
+
+## Step 7: Copy authx.py File to Your Main App Directory 📋
+
+To copy the authx.py file to your main app directory, you can use the cp (copy) command in Unix or the copy command in Windows. Here's how you can do it:
+
+```bash copy showLineNumbers filename="bash"
+cp path_to_authx.py path_to_your_main_app_directory
+```
+Replace `path_to_authx.py` with the path where your authx.py file is located, and `path_to_your_main_app_directory` with the path to your main app directory.
+
+## Step 8: Start the Django Project 🎉
+
+```bash copy showLineNumbers filename="bash"
+trustauthx start django
+```
+
+</Steps>

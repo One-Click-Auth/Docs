@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from '@components/icons'
+import { ArrowRightIcon } from '../../components/icons'
 import cn from 'clsx'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
