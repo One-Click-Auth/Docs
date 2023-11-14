@@ -94,10 +94,23 @@ const config: DocsThemeConfig = {
   },
 
   primaryHue: 83,
-
+  primarySaturation: 100,
+  
   search: {
     placeholder: "Search documentation...",
   },
+  sidebar: {
+    titleComponent({ title, type }) {
+      if (type === 'separator') {
+        return (
+          <div style={{ background: 'cyan', textAlign: 'center' }}>{title}</div>
+        )
+      }
+      if (title == 'Introduction') {
+        return <>{title} ❓ </>
+      }return <>{title}</>
+    }
+  }
 };
 
 export default {
@@ -120,6 +133,14 @@ export default {
         />
         <meta name="keywords" content="Trustauthx, Docs, Documentation, Guide, Tutorial, Trustauthx python, Auth0, clerk" />
       </>
+    )
+  },
+  banner: {
+    key: '2.0-release',
+    text: (
+      <a href="https://docs.trustauthx.com" target="https://app.trustauthx.com">
+        🎉 Trustauthx v-1.0 is released. Get Started →
+      </a>
     )
   }
 }
