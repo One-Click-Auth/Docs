@@ -88,7 +88,7 @@ const config: DocsThemeConfig = {
     const { asPath } = useRouter()
     if (asPath !== '/') {
       return {
-        titleTemplate: '%s – SWR'
+        titleTemplate: '%s – Trustauthx'
       }
     }
   },
@@ -108,10 +108,10 @@ export default {
     const url =
       'https://docs.trustauthx.com' +
       (defaultLocale === locale ? asPath : `/${locale}${asPath}`)
-      
+
     return (
       <>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon-32x32.png" />
         <meta property="og:url" content={url} />
         <meta property="og:title" content={frontMatter.title || 'Trustauthx'} />
         <meta
