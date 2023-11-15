@@ -1,0 +1,193 @@
+import { Steps } from 'nextra/components'
+import { Tabs } from 'nextra/components'
+
+## Set Up and Activate Virtual Environment (Highly Recommended) 🛠️✅
+
+```bash copy showLineNumbers filename="bash"
+py -m venv . 
+```
+
+<Tabs items={['Windows', 'Mac', 'Linux']}>
+  <Tabs.Tab>**Windows**: <br/> <br/> ```.\Scripts\activate```</Tabs.Tab>
+  <Tabs.Tab>**Mac**: <br/> <br/> ```source bin/activate```</Tabs.Tab>
+  <Tabs.Tab>**Linux**: <br/> <br/> ```source bin/activate```</Tabs.Tab>
+</Tabs>
+
+<br/>
+<br/>
+
+<Steps>
+### Step 1 👨‍💻 Install Dependencies
+
+Make sure you have Trustauthx SDK installed. You can install it using pip:
+
+```bash copy showLineNumbers
+pip install trustauthx
+```
+
+### Step 2 🚀 Configure Trustauthx with Django
+
+In your Django project, create a file named `authx.py` to handle authentication and token management. Replace the placeholder values in the code with your actual Trustauthx credentials.
+
+```python copy showLineNumbers filename="python"
+# myapp/authx.py
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from trustauthx.authlite import AuthLiteClient
+from dotenv import load_dotenv
+from django.conf import settings
+import os
+
+load_dotenv()
+
+auth_lite_client = AuthLiteClient(
+    api_key=os.getenv('API_KEY'),
+    secret_key=os.getenv('API_SECRET'),
+    org_id=os.getenv('ORG_ID')
+)
+```
+
+### Step 3 🌐 Define Authentication Functions
+
+Implement functions to handle authentication and token management in your `authx.py` file.
+
+
+#### 1. `get_auth_info(request)`
+```python copy showLineNumbers filename="python"
+def get_auth_info(request):
+    access_token = request.session.get("access_token")
+    refresh_token = request.session.get("refresh_token")
+    try:
+        auth_result = auth_lite_client.validate_token_set(access_token=access_token, refresh_token=refresh_token)
+        if not auth_result.state:
+            request.session["access_token"] = auth_result.access
+            request.session["refresh_token"] = auth_result.refresh
+            result_msg = "Token Regenerated, Refresh Token Valid"
+        else:
+            result_msg = "Access Token Valid"
+        return result_msg
+    except Exception as e:
+        return redirect(auth_lite_client.generate_url())
+```
+**Purpose:** This function checks the validity of the access and refresh tokens stored in the session. If the tokens are valid, it returns a message indicating that the access token is valid. If the access token is not valid, it regenerates the tokens using the Trustauthx SDK and updates the session with the new tokens.
+
+#### 2. `root(request)`
+```python copy showLineNumbers filename="python"
+def root(request):
+    return redirect(auth_lite_client.generate_url())
+```
+**Purpose:** This function redirects the user to the Trustauthx authentication page by generating the authentication URL using `auth_lite_client.generate_url()`.
+
+#### 3. `get_user(request)`
+```python copy showLineNumbers filename="python"
+def get_user(request):
+    auth_code = request.GET.get('code')
+    try:
+        user_data = auth_lite_client.get_user(auth_code)
+        request.session["access_token"] = user_data['access_token']
+        request.session["refresh_token"] = user_data['refresh_token']
+        return JsonResponse({"user": user_data})
+    except Exception as e:
+        return JsonResponse({"error": "Bad Request"}, status=400)
+```
+**Purpose:** This function retrieves user data from Trustauthx using the authorization code obtained from the authentication process. It updates the session with the obtained access and refresh tokens and returns the user data in a JSON response. If an error occurs, it returns a JSON response with a 400 status code.
+
+#### 4. `update_user(request)`
+```python copy showLineNumbers filename="python"
+def update_user(request):
+    try:
+        access_token = request.session.get("access_token")
+        return redirect(auth_lite_client.generate_edit_user_url(access_token, url=settings.BASE_URL + "/re-auth"))
+    except Exception as e:
+        return JsonResponse({"error": "Bad Request"}, status=400)
+```
+**Purpose:** This function generates a URL for updating user information using the Trustauthx SDK (`generate_edit_user_url`). It redirects the user to this URL. If an error occurs, it returns a JSON response with a 400 status code.
+
+#### 5. `re_auth(request)`
+```python copy showLineNumbers filename="python"
+def re_auth(request):
+    auth_code = request.GET.get('code')
+    try:
+        user_data = auth_lite_client.re_auth(auth_code)
+        request.session["access_token"] = user_data['access_token']
+        request.session["refresh_token"] = user_data['refresh_token']
+        return JsonResponse({"user": user_data})
+    except Exception as e:
+        return redirect(settings.BASE_URL + "/validate-token")
+```
+**Purpose:** This function performs a re-authentication process using the provided authorization code. It updates the session with the new access and refresh tokens obtained from the re-authentication process. It returns the user data in a JSON response. If an error occurs, it redirects the user to the token validation endpoint.
+
+#### 6. `validate_access_token(request)`
+```python copy showLineNumbers filename="python"
+def validate_access_token(request):
+    token_validator = get_auth_info(request)
+    return JsonResponse({"result": token_validator})
+```
+**Purpose:** This function validates the access token and returns the validation result in a JSON response. It utilizes the `get_auth_info` function to get the authentication information.
+
+#### 7. `revoke_tokens(request)`
+```python copy showLineNumbers filename="python"
+def revoke_tokens(request):
+    try:
+        return auth_lite_client.revoke_token(AccessToken=request.session.get("access_token"), revoke_all_tokens=True)
+    except Exception as e:
+        return redirect(auth_lite_client.generate_url())
+```
+**Purpose:** This function revokes all tokens associated with the user's session. It uses the Trustauthx SDK's `revoke_token` method with the `revoke_all_tokens` parameter set to `True`. If an error occurs, it redirects the user to the Trustauthx authentication page.
+
+#### 8. `revoke_access_tokens(request)`
+```python copy showLineNumbers filename="python"
+def revoke_access_tokens(request):
+    try:
+        return auth_lite_client.revoke_token(AccessToken=request.session.get("access_token"))
+    except Exception as e:
+        return redirect(auth_lite_client.generate_url())
+```
+**Purpose:** This function revokes only the access token associated with the user's session. It uses the Trustauthx SDK's `revoke_token` method. If an error occurs, it redirects the user to the Trustauthx authentication page.
+
+#### 9. `invalidate_all_tokens(request)`
+```python copy showLineNumbers filename="python"
+def invalidate_all_tokens(request):
+    result = revoke_tokens(request)
+    return redirect(settings.BASE_URL + "/validate-token")
+```
+**Purpose:** This function invalidates all tokens by calling the `revoke_tokens` function and then redirects the user to the token validation endpoint.
+
+#### 10. `invalidate_access_token(request)`
+```python copy showLineNumbers filename="python"
+def invalidate_access_token(request):
+    result = revoke_access_tokens(request)
+    return JsonResponse({"result": "Revoked access token"})
+```
+**Purpose:** This function invalidates only the access token by calling the `revoke_access_tokens` function and returns a JSON response indicating that the access token has been revoked.
+
+These functions collectively handle the authentication flow, token management, and user interactions in a Django application integrated with Trustauthx.
+
+
+### Step 4 🚀 Integrate with Django Views and URLs
+
+Integrate the functions in your Django views and URLs.
+
+# In your Django views and URLs, integrate the functions from authx.py
+
+```python copy showLineNumbers filename="python"
+from django.urls import path
+from .authx import *
+
+urlpatterns = [
+    path('', root),
+    path('get-user/', get_user),
+    path('update-user/', update_user),
+    path('re-auth/', re_auth),
+    path('validate-token/', validate_access_token),
+    path('invalidate-all-tokens/', invalidate_all_tokens),
+    path('invalidate-access-token/', invalidate_access_token),
+]
+```
+
+### Step 5 🚀 Run Your Django Application
+
+Finally, run your Django application, and you've successfully integrated the Trustauthx SDK for authentication and token management in your Django project. Your application is now secured with Trustauthx🚀.
+</Steps>
+
+Please ensure that you've replaced the placeholder values in the Trustauthx SDK configuration with your actual credentials before running your Django application.

@@ -1,0 +1,219 @@
+import { Steps } from 'nextra/components'
+import { Tabs } from 'nextra/components'
+
+## Set Up and Activate Virtual Environment (Highly Recommended) 🛠️✅
+
+```bash copy showLineNumbers filename="bash"
+py -m venv . 
+```
+
+<Tabs items={['Windows', 'Mac', 'Linux']}>
+  <Tabs.Tab>**Windows**: <br/> <br/> ```.\Scripts\activate```</Tabs.Tab>
+  <Tabs.Tab>**Mac**: <br/> <br/> ```source bin/activate```</Tabs.Tab>
+  <Tabs.Tab>**Linux**: <br/> <br/> ```source bin/activate```</Tabs.Tab>
+</Tabs>
+
+<br/>
+<br/>
+
+<Steps>
+### Step 1 👨‍💻 Install Dependencies
+
+Make sure you have Flask and Trustauthx SDK installed. You can install them using pip:
+
+```bash copy showLineNumbers
+pip install flask
+pip install trustauthx
+```
+
+### Step 2 🚀 Create a Flask Application
+
+Create a Flask application and configure it with Trustauthx. Make sure to replace "your_secret_key", "API_KEY", "API_SECRET", and "ORG_ID" with your actual values.
+
+```python copy showLineNumbers filename="python"
+from flask import Flask, request, redirect, session
+from trustauthx.authlite import AuthLiteClient
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = Flask(__name__)
+app.secret_key = "your_secret_key"
+
+auth_client = AuthLiteClient(api_key=os.getenv('API_KEY'), 
+                             secret_key=os.getenv('API_SECRET'), 
+                             org_id=os.getenv('ORG_ID'))
+```
+
+### Step 3 🌐 Define Authentication Function
+
+Create a function to handle authentication. This function will validate tokens and refresh them if necessary.
+
+```python copy showLineNumbers filename="python"
+def authenticate_user():
+    access_token_var = session.get("access_token")
+    refresh_token_var = session.get("refresh_token")
+    try:
+        token_set_var = auth_client.validate_token_set(access_token=access_token_var, refresh_token=refresh_token_var)
+        if not token_set_var.state:
+            session["access_token"] = token_set_var.access
+            session["refresh_token"] = token_set_var.refresh
+            result_msg = "Token Regenerated, Refresh Token Valid" 
+        else:
+            result_msg = "Access Token Valid"
+        return result_msg
+    except Exception as e:
+        return redirect(auth_client.generate_url())
+```
+
+### Step 4 🏞️ Create Endpoints
+
+Define the endpoints that require authentication and use the Trustauthx SDK.
+
+```python copy showLineNumbers filename="python"
+@app.route("/")
+def root():
+    return redirect(auth_client.generate_url())
+
+@app.route("/user")
+def get_user():
+    auth_code_var = request.args.get('code')
+    try:
+        user_info_var = auth_client.get_user(auth_code_var)
+        session["access_token"] = user_info_var['access_token']
+        session["refresh_token"] = user_info_var['refresh_token']
+        return {"user": user_info_var}
+    except:
+        return {"error": "Bad Request"}, 400
+
+@app.route("/user-update")
+def update_user():
+    try:
+        access_token_var = session.get("access_token")
+        return redirect(auth_client.generate_edit_user_url(access_token_var, url="http://127.0.0.1:3535/re-auth"))
+    except:
+        return {"error": "Bad Request"}, 400
+
+@app.route("/re-auth")
+def re_auth():
+    auth_code_var = request.args.get('code')
+    try:
+        user_info_var = auth_client.re_auth(auth_code_var)
+        session["access_token"] = user_info_var['access_token']
+        session["refresh_token"] = user_info_var['refresh_token']
+        return {"user": user_info_var}
+    except:
+        return redirect("http://127.0.0.1:3535/validate-token")
+```
+
+
+
+##### 1. *Root Endpoint ("/")*
+   - **Function Name:** `root()`
+   - **Purpose:** Redirects users to the Trustauthx authentication page.
+   - **Code Explanation:**
+     ```python
+     @app.route("/")
+     def root():
+         return redirect(auth_client.generate_url())
+     ```
+   - This endpoint handles HTTP GET requests to the root path ("/"). When a user accesses the root path, it redirects them to the Trustauthx authentication page by calling `auth_client.generate_url()`.
+
+##### 2. *Get User Endpoint ("/user")*
+   - **Function Name:** `get_user()`
+   - **Purpose:** Retrieves user information after successful authentication with Trustauthx.
+   - **Code Explanation:**
+     ```python
+     @app.route("/user")
+     def get_user():
+         auth_code_var = request.args.get('code')
+         try:
+             user_info_var = auth_client.get_user(auth_code_var)
+             session["access_token"] = user_info_var['access_token']
+             session["refresh_token"] = user_info_var['refresh_token']
+             return {"user": user_info_var}
+         except:
+             return {"error": "Bad Request"}, 400
+     ```
+   - This endpoint handles HTTP GET requests to "/user". It expects the Trustauthx authentication code as a query parameter ("code"). After successful authentication, it stores the access token and refresh token in the session and returns the user information.
+
+##### 3. *Update User Endpoint ("/user-update")*
+   - **Function Name:** `update_user()`
+   - **Purpose:** Redirects users to the Trustauthx user update page for re-authentication.
+   - **Code Explanation:**
+     ```python
+     @app.route("/user-update")
+     def update_user():
+         try:
+             access_token_var = session.get("access_token")
+             return redirect(auth_client.generate_edit_user_url(access_token_var, url="http://127.0.0.1:3535/re-auth"))
+         except:
+             return {"error": "Bad Request"}, 400
+     ```
+   - This endpoint handles HTTP GET requests to "/user-update". It retrieves the access token from the session and redirects the user to the Trustauthx user update page for re-authentication.
+
+##### 4. *Re-authenticate Endpoint ("/re-auth")*
+   - **Function Name:** `re_auth()`
+   - **Purpose:** Performs re-authentication to refresh tokens after user updates the his data.
+   - **Code Explanation:**
+     ```python
+     @app.route("/re-auth")
+     def re_auth():
+         auth_code_var = request.args.get('code')
+         try:
+             user_info_var = auth_client.re_auth(auth_code_var)
+             session["access_token"] = user_info_var['access_token']
+             session["refresh_token"] = user_info_var['refresh_token']
+             return {"user": user_info_var}
+         except:
+             return redirect("http://127.0.0.1:3535/validate-token")
+     ```
+   - This endpoint handles HTTP GET requests to "/re-auth". It expects the Trustauthx authentication code as a query parameter ("code"). It performs re-authentication using Trustauthx, updates the session with the new tokens, and returns the refreshed user information.
+
+These endpoints collectively form the user authentication and management flow in the Flask application, interacting with Trustauthx for secure authentication and token handling.
+
+### Step 5 🔄 Refresh Tokens
+
+Create an endpoint to refresh tokens.
+
+```python copy showLineNumbers filename="python"
+@app.route("/validate-token")
+def validate_access_token():
+    token_validator_result = authenticate_user()
+    return token_validator_result
+```
+
+### Step 6 🔒 Revoke Tokens
+
+Create endpoints to revoke tokens.
+
+```python copy showLineNumbers filename="python"
+def revoke_tokens():
+    try:
+        return auth_client.revoke_token(AccessToken=session.get("access_token"), revoke_all_tokens=True)
+    except:
+        return redirect(auth_client.generate_url())
+
+def revoke_access_tokens():
+    try:
+        return auth_client.revoke_token(AccessToken=session.get("access_token"))
+    except:
+        return redirect(auth_client.generate_url())
+
+@app.route("/sign-out")
+def invalidate_all_tokens():
+    result = revoke_tokens()
+    return redirect("http://127.0.0.1:3535/validate-token")
+
+@app.route("/semi-sign-out")
+def invalidate_access_token():
+    result = revoke_access_tokens()
+    return "Revoked access token"
+
+if __name__ == "__main__":
+    app.run(port=3535)
+```
+</Steps>
+
+#### That's it! You've successfully integrated the Trustauthx SDK with Flask to handle authentication and token management. Your Flask application is now secured with Trustauthx 🚀.
