@@ -1,0 +1,59 @@
+import { Steps } from 'nextra/components'
+import Image from 'next/image'
+import { cards, OneIcon, WarningIcon } from '../../components/icons'
+import { Card, Cards } from 'nextra/components'
+
+# Customizing Social Sign-On with TrustAuthX 🌐🔑
+
+TrustAuthX allows you to integrate almost any supported social sign-up. We are committed to delivering as many options as possible to fulfill everyone's needs. You can create your own OAuth2 client and use it with TrustAuthX. If you don't want to create your own, don't worry, we've got you covered. You can always use our generic Social Sign-On. 
+
+<br/>
+<br/>
+
+## Steps to Customize Social Sign-On in TrustAuthX
+<br/>
+<br/>
+<Image src="/add-social-sign.gif" alt="TrustAuthX Social Sign-On" width={1000} height={1000} />
+
+<Steps>
+
+<br/>
+### Step 1: Navigate to the Organizations Tab 🗂️
+
+Start by signing up at TrustAuthX and creating a new organization. Then, click the **"Manage"** button in the Organization table for the required organization.
+
+### Step 2: Access the "Widget Settings" and Select the "Dev Settings" Tab ⚙️
+
+Next, select **"Settings"** from the sidebar and then choose the "Dev Settings" tab. Here, you'll see the different social connectors.
+
+### Step 3: Enable Social Sign-On 🌐
+
+Click the button in the "Social Sign-in" section. A popup will appear, informing you that this feature can be turned on in two ways:
+
+- ##### **Way 1: Use Generic**: Click the **"Use Generic"** button.
+<br/>
+<Image src="/add-social-sign.gif" alt="TrustAuthX Social Sign-On" width={1000} height={1000} />
+<br/>
+
+- ##### **Way 2: Use Your Own**: Fill up all the details. Copy the Callback URL and paste it in your OAuth2 app. Paste your **CLIENT_ID** and **CLIENT_SECRET** in the required input boxes.
+<br/>
+<Image src="/add-social-sign-2.gif" alt="TrustAuthX Social Sign-On" width={1000} height={1000} />
+
+### Step 4: Confirm Your Selection ✅
+
+Finally, click "Yes" to confirm. This will add the Social Sign-On to your platform and all resources will be allocated to your organization.
+
+### Step 5: Create Some Social OAuth2 Apps (Optional) 🌐🔑
+
+<Cards>
+  <Card title="Creating Google OAuth2 🌐🔑" href="/Social-Signup/Registering-your-own-OAuth-application/Google"  arrow="true"  image="true"/>
+  <Card title="Creating Microsoft OAuth2 🌐🔑" href="/Social-Signup/Registering-your-own-OAuth-application/Microsoft"  arrow="true"  image="true"/>
+  <Card title="Creating Github OAuth2 🌐🔑" href="/Social-Signup/Registering-your-own-OAuth-application/Github"  arrow="true"  image="true"/>
+  <Card title="Creating Discord OAuth2 🌐🔑" href="/Social-Signup/Registering-your-own-OAuth-application/Discord"  arrow="true"  image="true"/>
+  <Card title="Creating Figma OAuth2 🌐🔑" href="/Social-Signup/Registering-your-own-OAuth-application/Figma"  arrow="true"  image="true"/>
+</Cards>
+
+
+</Steps>
+
+This document provides a step-by-step guide on how to customize Social Sign-On with TrustAuthX, allowing users to authenticate and access your platform using their social media accounts, thereby enhancing user convenience and streamlining the onboarding experience. 🌐💻
