@@ -1,4 +1,4 @@
-export default function Video({ src }) {
+export default function Video ({ src }) {
   return (
     <video
       muted
@@ -6,9 +6,9 @@ export default function Video({ src }) {
       playsInline
       loop
       controls
-      className="mt-6 rounded-xl border dark:border-zinc-800"
+      className='mt-6 rounded-xl border dark:border-zinc-800'
     >
-      <source src={src} type="video/mp4" />
+      <source src={src} type='video/mp4' />
     </video>
   )
 }
