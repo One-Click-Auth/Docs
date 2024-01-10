@@ -72,18 +72,21 @@ Organization Id locally.
 
 <Steps>
 
-#### Set Up the React Application using Trustauthx template
+#### Set Up the React Application using Vite
 
-// TODO: check if `pkg` is published and update accordingly
+Bootstrap your new React application using
+[Vite↗](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
 
 #### Install Dependencies
 
 <Tabs items={['npm', 'yarn']}>
   <Tabs.Tab>
-    **npm**: <br /> ```npm i```
+    **npm**: <br /> ```npm create vite trustauthx-react --template react-ts cd
+    trustauthx-react yarn install yarn dev```
   </Tabs.Tab>
   <Tabs.Tab>
-    **yarn**: <br /> ```yarn install```
+    **yarn**: <br /> ```yarn create vite trustauthx-react --template react-ts cd
+    trustauthx-react yarn install yarn dev```
   </Tabs.Tab>
 </Tabs>
 
@@ -105,14 +108,181 @@ VITE_API_SECRET=your_api_secret
 </Tabs.Tab>
 </Tabs>
 
+#### Wrap your App in `<AuthProvider />`
+
+The `<AuthProvider />` component provides user context and active session
+management to the App. Create a directory named `context` inside `src` directory
+and also create two files named `auth-context-provider.tsx` and
+`auth-context.ts`.
+
+```sh
+mkdir src/context
+touch src/context/auth-context-provider.tsx
+touch src/context/auth-context.ts
+```
+
+Now copy and paste the contents into respective files.
+
+```tsx
+//auth-context.ts
+import React from 'react';
+
+export interface UserContract {
+  name?: string;
+  uid?: string;
+}
+
+export interface AuthState {
+  user?: UserContract;
+  loginURL: string;
+  updateState: (newState: Partial<AuthState>) => void;
+  signin: (code: string) => void;
+  signout: () => void;
+}
+
+const defaultState: AuthState = {
+  user: {},
+  loginURL: '',
+  updateState: (newState?: Partial<AuthState>) => {},
+  signin: (code?: string) => {},
+  signout: () => {},
+};
+
+export const AuthContext = React.createContext<AuthState>(defaultState);
+
+export function useAuthContext() {
+  return React.useContext(AuthContext);
+}
+```
+
+```tsx
+//NOTE: using local-storage for example-only.
+//auth-context-provider.tsx
+import React from 'react';
+import { AuthLiteClient } from 'trustauthx';
+import { AuthContext, AuthState } from './auth-context';
+
+interface Props {
+  apiKey: string;
+  apiSecret: string;
+  orgId: string;
+  children: React.ReactElement;
+}
+
+export const AuthContextProvider = (props: Props) => {
+  const [state, setState] = React.useState({});
+  const authLiteClient = new AuthLiteClient(
+    props.apiKey,
+    props.apiSecret,
+    props.orgId
+  );
+  const loginURL = authLiteClient.generateUrl();
+
+  const setToken = (access_token: string) => {
+    localStorage.setItem('access_token', JSON.stringify(access_token));
+  };
+
+  const updateState = (newState: Partial<AuthState>) => {
+    setState({ ...state, ...newState });
+  };
+
+  const signout = async () => {
+    const accessToken = JSON.parse(localStorage.getItem('access_token'));
+    if (!accessToken) {
+      throw Error('Missing AccessToken');
+    }
+    await authLiteClient.revokeToken(accessToken, null, true);
+    localStorage.removeItem('access_token');
+    updateState({ user: {} });
+  };
+
+  const signin = async (code: string) => {
+    const user = await authLiteClient.getUser(code);
+    updateState({ user });
+    setToken(user.access_token);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        ...state,
+        updateState,
+        signout,
+        signin,
+        loginURL,
+      }}
+    >
+      {props.children}
+    </AuthContext.Provider>
+  );
+};
+```
+
+After this import `<AuthProvider />` by adding
+`import { AuthContextProvider } from './context/auth-context-provider.tsx';` at
+the top of your `/src/main.tsx` file.
+
+```tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
+import { AuthContextProvider } from './context/auth-context-provider.tsx';
+
+const API_KEY: string = import.meta.env.VITE_API_KEY;
+const API_SECRET: string = import.meta.env.VITE_API_SECRET;
+const ORG_ID: string = import.meta.env.VITE_ORG_ID;
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <AuthContextProvider apiKey={API_KEY} apiSecret={API_SECRET} orgId={ORG_ID}>
+      <App />
+    </AuthContextProvider>
+  </React.StrictMode>
+);
+```
+
+#### Use context `useAuthContext()` to protect routes
+
+For your `protected` routes use `AuthContext` to protect routes from
+unauthroized access.
+
+<br />
+
+```tsx
+//protected-route.tsx
+
+function ProtectedRoute(){
+    const AuthContext = useAuthContext();
+    if (!AuthContext) throw Error('Missing AuthContext');
+    const { user } = AuthContext;
+    const isSignedIn = !!user?.uid;
+
+    if(!isSignedIn){
+      //write code to handle unauthroized user
+    }
+  return(
+    //...JSX
+  )
+}
+
+```
+
 #### Run Development Server
 
-You are now ready to `run the development server`, `deploy your app`, and
-welcome new users!
+You are now ready to `run the development server`, and welcome new users!
 
 </Steps>
 
 </Steps>
+
+## Next Step: Clone the Example Project (May Get Removed)
+
+If you want to enhance your app onboarding experience and provide features like
+`check-auth`, `require-auth`, `auth-status`, and `hooks`, you can follow these
+steps. Assuming you are working with a Git repository, here's a general guide:
+
+> check with @team is package **trustauthx-cli** published.
 
 ## Congratulations
 
