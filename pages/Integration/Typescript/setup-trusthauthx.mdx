@@ -1,0 +1,82 @@
+import { Steps } from 'nextra/components';
+import { Card, Cards } from 'nextra/components';
+
+# Setup your Trustauthx account
+
+## What You Will Learn
+
+- Create a Trustauthx Account
+- Using the Demo Organization
+- Create a new application
+
+<Steps>
+
+### Step 1: Create a Trustauthx Account
+
+[Create a Trustauthx Account ↗](https://app.trustauthx.com/signup) or
+[Sign in to your Trustauthx dashboard ↗](https://app.trustauthx.com/).
+
+### Step 2: Use Demo Organization
+
+If you have just created an account for the first time, you will be directed to
+your Trustauthx dashboard.
+
+<div
+  style={{
+    filter: 'drop-shadow(rgba(0, 0, 0, 0.16) 0px 12px 24px)',
+    margin: '16px auto',
+  }}
+>
+  ![An interactive dashboard to customize your "<SignIn />" component according
+  to your preferences, allowing you to manage your organization, users, widgets,
+  and secrets through various auth providers. ](/manage_demo_org.png)
+</div>
+
+Following this, you need to generate your API key and Secret key for the 'Demo
+Org' organization on your Trustauthx Dashboard before setting up Trustauthx
+React.
+
+To generate a new API key and Secret key, click the `Manage` button to navigate
+to the Demo Org Dashboard page. Then, click on the `Manage API keys` link.
+
+<div
+  style={{
+    filter: 'drop-shadow(rgba(0, 0, 0, 0.16) 0px 12px 24px)',
+    margin: '16px auto',
+  }}
+>
+  ![An interactive dashboard to customize your "<SignIn />" component according
+  to your preferences, allowing you to manage your organization, users, widgets,
+  and secrets through various auth providers. ](/manage_demo_api_keys.png)
+</div>
+
+Now, click the `Delete existing & generate a new Pair` button to create new API
+and Secret keys.
+
+<div
+  style={{
+    filter: 'drop-shadow(rgba(0, 0, 0, 0.16) 0px 12px 24px)',
+    margin: '16px auto',
+  }}
+>
+  ![An interactive dashboard to customize your "<SignIn />" component according
+  to your preferences, allowing you to manage your organization, users, widgets,
+  and secrets through various auth providers. ](/generate_demo_secrets.png)
+</div>
+
+Afterward, copy and paste your organization's API Key, Secret Key, and
+Organization Id locally.
+
+### Step 3: Create a new application
+
+The Secrets listed in the dashboard are just the first step to integrating
+Trustauthx into your apps. To get the most out of Trustauthx, check out our
+guides:
+
+<Cards>
+  <Card title="React" href="React/React" />
+  <Card title="NextJS (Coming Soon 🚀)" href="NextJS/NextJs" />
+  <Card title="Remix (Coming Soon 🚀)" href="Remix/Remix" />
+</Cards>
+
+</Steps>

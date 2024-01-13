@@ -1,106 +1,63 @@
-import { Steps } from 'nextra/components';
-import { Tabs } from 'nextra/components';
+import { Steps, Tabs } from 'nextra/components';
 
 # Trustauthx React SDK Documentation
 
-## What You Will Learn
+Getting Started with the Installation and Initialization of Trustauthx in a new
+React application
 
-- How to Create a Trustauthx Account
-- Using the Demo Organization
-- Getting Started with the Installation and Initialization of Trustauthx in a
-  new React application
+## You will learn how to:
 
-<Steps>
-
-### Step 1: Create a Trustauthx Account
-
-[Create a Trustauthx Account ↗](https://app.trustauthx.com/signup) or
-[Sign in to your Trustauthx dashboard ↗](https://app.trustauthx.com/).
-
-### Step 2: Use Demo Organization
-
-If you have just created an account for the first time, you will be directed to
-your Trustauthx dashboard.
-
-<div
-  style={{
-    filter: 'drop-shadow(rgba(0, 0, 0, 0.16) 0px 12px 24px)',
-    margin: '16px auto',
-  }}
->
-  ![An interactive dashboard to customize your "<SignIn />" component according
-  to your preferences, allowing you to manage your organization, users, widgets,
-  and secrets through various auth providers. ](/manage_demo_org.png)
-</div>
-
-Following this, you need to generate your API key and Secret key for the 'Demo
-Org' organization on your Trustauthx Dashboard before setting up Trustauthx
-React.
-
-To generate a new API key and Secret key, click the `Manage` button to navigate
-to the Demo Org Dashboard page. Then, click on the `Manage API keys` link.
-
-<div
-  style={{
-    filter: 'drop-shadow(rgba(0, 0, 0, 0.16) 0px 12px 24px)',
-    margin: '16px auto',
-  }}
->
-  ![An interactive dashboard to customize your "<SignIn />" component according
-  to your preferences, allowing you to manage your organization, users, widgets,
-  and secrets through various auth providers. ](/manage_demo_api_keys.png)
-</div>
-
-Now, click the `Delete existing & generate a new Pair` button to create new API
-and Secret keys.
-
-<div
-  style={{
-    filter: 'drop-shadow(rgba(0, 0, 0, 0.16) 0px 12px 24px)',
-    margin: '16px auto',
-  }}
->
-  ![An interactive dashboard to customize your "<SignIn />" component according
-  to your preferences, allowing you to manage your organization, users, widgets,
-  and secrets through various auth providers. ](/generate_demo_secrets.png)
-</div>
-
-Afterward, copy and paste your organization's API Key, Secret Key, and
-Organization Id locally.
-
-### Step 3: Getting Started with Installing and Initializing Trustauthx in a new React application
+- Set Up the React Application using Vite
+- Install `trustauthx`
+- Set up your environment keys
+- Wrap your App in `<AuthProvider />`
+- Use context `useAuthContext()` to protect routes
+- Run your application
 
 <Steps>
 
-#### Set Up the React Application using Vite
+### Set Up the React Application using Vite
 
 Bootstrap your new React application using
 [Vite↗](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
 
-#### Install Dependencies
+### Install Dependencies
 
 <Tabs items={['npm', 'yarn']}>
   <Tabs.Tab>
-    **npm**: <br />
     ```sh
     npm create vite trustauthx-react --template react-ts 
     cd trustauthx-react
     npm install 
-    npm dev 
+    npm run dev 
     ```
   </Tabs.Tab>
-  <Tabs.Tab>
-    **yarn**: <br /> 
+  <Tabs.Tab> 
         ```sh
     yarn create vite trustauthx-react --template react-ts 
     cd trustauthx-react
     yarn install 
-    yarn dev 
+    yarn run dev 
     ```
   </Tabs.Tab>
 </Tabs>
 
-#### Set Environment Keys
+### Install `trustauthx`
+
+<Tabs items={['npm', 'yarn']}>
+  <Tabs.Tab>
+    ```sh
+    npm install trustauthx
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab> 
+        ```sh
+    yarn add trustauthx 
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+### Set Environment Keys
 
 In the project's root folder, create an `.env` file alongside `package.json` and
 other configuration files.
@@ -109,8 +66,8 @@ Add the following code to your `.env` file to set your public and secret keys.
 
 <Tabs items={['.env']}>
 
-<Tabs.Tab> 
-```
+<Tabs.Tab>
+```sh
 VITE_ORG_ID=your_org_id
 VITE_API_KEY=your_api_key
 VITE_API_SECRET=your_api_secret
@@ -118,7 +75,7 @@ VITE_API_SECRET=your_api_secret
 </Tabs.Tab>
 </Tabs>
 
-#### Wrap your App in `<AuthProvider />`
+### Wrap your App in `<AuthProvider />`
 
 The `<AuthProvider />` component provides user context and active session
 management to the App. Create a directory named `context` inside `src` directory
@@ -135,6 +92,7 @@ Now copy and paste the contents into respective files.
 
 ```tsx
 //auth-context.ts
+
 import React from 'react';
 
 export interface UserContract {
@@ -233,6 +191,7 @@ After this import `<AuthProvider />` by adding
 the top of your `/src/main.tsx` file.
 
 ```tsx
+//src/main.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
@@ -252,12 +211,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 ```
 
-#### Use context `useAuthContext()` to protect routes
+### Use context `useAuthContext()` to protect routes
 
 For your `protected` routes use `AuthContext` to protect routes from
 unauthroized access.
-
-<br />
 
 ```tsx
 //protected-route.tsx
@@ -275,24 +232,13 @@ function ProtectedRoute(){
     //...JSX
   )
 }
-
 ```
 
-#### Run Development Server
+### Run your application
 
-You are now ready to `run the development server`, and welcome new users!
-
-</Steps>
+You are now ready to run your application, and welcome new users!
 
 </Steps>
-
-## Next Step: Clone the Example Project (May Get Removed)
-
-If you want to enhance your app onboarding experience and provide features like
-`check-auth`, `require-auth`, `auth-status`, and `hooks`, you can follow these
-steps. Assuming you are working with a Git repository, here's a general guide:
-
-> check with @team is package **trustauthx-cli** published.
 
 ## Congratulations
 
