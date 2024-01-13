@@ -1,3 +1,340 @@
-# Trustauthx NextJS SDK Documentation
+import { Steps, Tabs } from 'nextra/components';
 
-Coming Soon 🚀
+# Add authentication and user management to your React app with Trustauthx
+
+This guide will walk you through integrating Trustauthx into your React
+application for authentication and user management. Follow these steps to
+enhance your app's security and provide a seamless user experience.
+
+## You will learn how to:
+
+- Set Up the React Application using Vite
+- Install `trustauthx`
+- Set up your environment keys
+- Wrap your App in `<AuthProvider />`
+- Use `hooks` and `components` for protected routes and user management
+- Run your application
+
+<Steps>
+
+### Set Up the React Application using Vite
+
+Bootstrap your new React application using
+[Vite↗](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
+
+### Install Dependencies
+
+<Tabs items={['npm', 'yarn']}>
+  <Tabs.Tab>
+    ```sh 
+    npm create vite trustauthx-react --template react-ts 
+    cd trustauthx-react 
+    npm install 
+    npm run dev 
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```sh 
+    yarn create vite trustauthx-react --template react-ts 
+    cd trustauthx-react 
+    yarn install 
+    yarn run dev 
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+### Install `trustauthx`
+
+<Tabs items={['npm', 'yarn']}>
+  <Tabs.Tab>
+  ```sh 
+  npm install trustauthx 
+  ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+  ```sh 
+  yarn add trustauthx 
+  ```
+  </Tabs.Tab>
+</Tabs>
+
+### Set Environment Keys
+
+In the project's root folder, create an `.env` file alongside `package.json` and
+other configuration files.
+
+Add the following code to your `.env` file to set your public and secret keys.
+
+<Tabs items={['.env']}>
+
+<Tabs.Tab>
+```sh
+VITE_ORG_ID=your_org_id
+VITE_API_KEY=your_api_key
+VITE_API_SECRET=your_api_secret
+```
+</Tabs.Tab>
+</Tabs>
+
+### Wrap your App in `<AuthProvider />`
+
+The `<AuthProvider />` component provides user context and active session
+management to the App. Create a directory named `context` inside `src` directory
+and also create two files named `auth-context-provider.tsx` and
+`auth-context.ts`.
+
+```sh
+mkdir src/context
+touch src/context/auth-context-provider.tsx
+touch src/context/auth-context.ts
+```
+
+Now copy and paste the contents into respective files.
+
+```tsx
+//auth-context.ts
+
+import React from 'react';
+
+export interface UserContract {
+  name?: string;
+  uid?: string;
+}
+
+export interface AuthState {
+  user?: UserContract;
+  loginURL: string;
+  updateState: (newState: Partial<AuthState>) => void;
+  signin: (code: string) => void;
+  signout: () => void;
+}
+
+const defaultState: AuthState = {
+  user: {},
+  loginURL: '',
+  updateState: (newState?: Partial<AuthState>) => {},
+  signin: (code?: string) => {},
+  signout: () => {},
+};
+
+export const AuthContext = React.createContext<AuthState>(defaultState);
+
+export function useAuthContext() {
+  return React.useContext(AuthContext);
+}
+```
+
+```tsx
+//auth-context-provider.tsx
+
+import React from 'react';
+import { AuthLiteClient } from 'trustauthx';
+import Cookies from 'js-cookie';
+import { AuthContext, AuthState } from './auth-context';
+
+interface Props {
+  apiKey: string;
+  apiSecret: string;
+  orgId: string;
+  children: React.ReactNode;
+}
+
+export const AuthContextProvider = (props: Props) => {
+  const [state, setState] = React.useState({});
+  const authLiteClient = new AuthLiteClient(
+    props.apiKey,
+    props.apiSecret,
+    props.orgId
+  );
+  const loginURL = authLiteClient.generateUrl();
+
+  const setToken = (access_token: string) => {
+    Cookies.set('access_token', access_token, {
+      expires: 3600 * 24,
+    });
+  };
+
+  const updateState = (newState: Partial<AuthState>) => {
+    setState({ ...state, ...newState });
+  };
+
+  const signout = async () => {
+    const accessToken = Cookies.get('access_token');
+    if (!accessToken) {
+      throw Error('Missing AccessToken');
+    }
+    await authLiteClient.revokeToken(accessToken, null, true);
+    Cookies.remove('access_token');
+    updateState({ user: {} });
+  };
+
+  const signin = async (code: string) => {
+    const user = await authLiteClient.getUser(code);
+    updateState({ user });
+    setToken(user.access_token);
+  };
+
+
+
+  return (
+    <AuthContext.Provider
+      value={{
+        ...state,
+        updateState,
+        signout,
+        signin,
+        loginURL,
+      }}
+    >
+      {props.children}
+    </AuthContext.Provider>
+  );
+};
+```
+
+After this import `<AuthProvider />` by adding
+`import { AuthContextProvider } from './context/auth-context-provider.tsx';` at
+the top of your `/src/main.tsx` file.
+
+```tsx
+//src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import RootLayout from './App.tsx';
+import './index.css';
+import { AuthContextProvider } from './context/auth-context-provider.tsx';
+import ErrorPage from './error-page.tsx';
+import { ProtectedPage } from './routes/protected-page.tsx';
+import { AuthCheck } from './components/auth-check.tsx';
+import { AuthRequire } from './components/auth-require.tsx';
+import { LoginPage } from './routes/login-page.tsx';
+import { Outlet } from 'react-router-dom';
+
+
+const API_KEY: string = import.meta.env.VITE_API_KEY;
+const API_SECRET: string = import.meta.env.VITE_API_SECRET;
+const ORG_ID: string = import.meta.env.VITE_ORG_ID;
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <div><Outlet /></div>,
+    children: [
+      {
+        path: 'login',
+        element: (
+          <AuthCheck>
+            <LoginPage />
+          </AuthCheck>
+        ),
+      },
+      {
+        path: 'protected',
+        element: (
+          <AuthRequire>
+            <ProtectedPage />
+          </AuthRequire>
+        ),
+      },
+    ],
+  },
+]);
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <AuthContextProvider apiKey={API_KEY} apiSecret={API_SECRET} orgId={ORG_ID}>
+      <RouterProvider router={router} />
+    </AuthContextProvider>
+  </React.StrictMode>
+);
+```
+### Use `hooks` and `components` for protected routes and user management
+
+Create directory named `components` and following files inside it.
+
+```sh
+mkdir src/components
+touch src/components/auth-check.tsx
+touch src/components/auth-require.tsx
+```
+Now copy and paste the contents into respective files.
+
+```tsx
+//auth-check.tsx
+
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+
+export function AuthCheck({ children }: { children: React.ReactNode }) {
+  const { isSignedIn, loginURL } = useAuth();
+  const location = useLocation();
+  const to = location.state?.from ?? '/';
+  if (!isSignedIn) {
+    window.location.replace(loginURL);
+  }
+  return isSignedIn ? <Navigate to={to} replace /> : children;
+}
+```
+
+```tsx
+//auth-require.tsx
+
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+
+export function AuthRequire({ children }: { children: React.ReactNode }) {
+  const { isSignedIn } = useAuth();
+  const location = useLocation();
+  const { pathname } = location;
+
+  return isSignedIn ? (
+    children
+  ) : (
+    <Navigate to="/login" replace state={{ from: pathname }} />
+  );
+}
+```
+
+Now Create directory named `hooks` and following file inside it.
+
+```sh
+mkdir src/hooks
+touch src/hooks/useAuth.ts
+```
+
+```tsx
+//useAuth.ts
+
+import Cookies from 'js-cookie';
+import { useAuthContext } from '../context/auth-context';
+
+export function useAuth() {
+  const AuthContext = useAuthContext();
+  if (!AuthContext) throw Error('Missing AuthContext');
+  const { user, signout, signin, loginURL } = AuthContext;
+  const userId = user?.uid;
+  const isSignedIn = !!userId;
+  const orgId = user?.orgId;
+  const getToken = () => {
+    const accessToken = Cookies.get('access_token');
+    if (!accessToken) {
+      throw Error('Missing Access Token');
+    }
+    return accessToken;
+  };
+  return { isSignedIn, userId, orgId, loginURL, signout, signin, getToken };
+}
+```
+
+### Run your application
+
+You are now ready to run your application, and welcome new users!.
+
+</Steps>
+
+## Congratulations
+
+Congratulations! Your app is now using Trustauthx to authenticate users.This is just the first step. If you would like to clone or investigate this application, please check out:
+
+- [TrustauthX + React↗](https://github.com/One-Click-Auth/TS-TrustauthX-Templates/tree/main/Templates/example-reactjs-starter)
