@@ -25,7 +25,7 @@ Bootstrap your new React application using
 
 <Tabs items={['npm', 'yarn']}>
   <Tabs.Tab>
-    ```sh
+    ```typescript copy showLineNumbers filename="typescript"
     npm create vite trustauthx-react --template react-ts 
     cd trustauthx-react
     npm install 
@@ -33,7 +33,7 @@ Bootstrap your new React application using
     ```
   </Tabs.Tab>
   <Tabs.Tab> 
-        ```sh
+        ```typescript copy showLineNumbers filename="typescript"
     yarn create vite trustauthx-react --template react-ts 
     cd trustauthx-react
     yarn install 
@@ -46,12 +46,12 @@ Bootstrap your new React application using
 
 <Tabs items={['npm', 'yarn']}>
   <Tabs.Tab>
-    ```sh
+    ```typescript copy showLineNumbers filename="typescript"
     npm install trustauthx
     ```
   </Tabs.Tab>
   <Tabs.Tab> 
-        ```sh
+        ```typescript copy showLineNumbers filename="typescript"
     yarn add trustauthx 
     ```
   </Tabs.Tab>
@@ -67,7 +67,7 @@ Add the following code to your `.env` file to set your public and secret keys.
 <Tabs items={['.env']}>
 
 <Tabs.Tab>
-```sh
+```typescript copy showLineNumbers filename="typescript"
 VITE_ORG_ID=your_org_id
 VITE_API_KEY=your_api_key
 VITE_API_SECRET=your_api_secret
@@ -82,7 +82,7 @@ management to the App. Create a directory named `context` inside `src` directory
 and also create two files named `auth-context-provider.tsx` and
 `auth-context.ts`.
 
-```sh
+```typescript copy showLineNumbers filename="typescript"
 mkdir src/context
 touch src/context/auth-context-provider.tsx
 touch src/context/auth-context.ts
@@ -90,7 +90,7 @@ touch src/context/auth-context.ts
 
 Now copy and paste the contents into respective files.
 
-```tsx
+```typescript copy showLineNumbers filename="typescript"
 //auth-context.ts
 
 import React from 'react';
@@ -123,7 +123,7 @@ export function useAuthContext() {
 }
 ```
 
-```tsx
+```typescript copy showLineNumbers filename="typescript"
 //NOTE: using local-storage for example-only.
 //auth-context-provider.tsx
 import React from 'react';
@@ -190,7 +190,7 @@ After this import `<AuthProvider />` by adding
 `import { AuthContextProvider } from './context/auth-context-provider.tsx';` at
 the top of your `/src/main.tsx` file.
 
-```tsx
+```typescript copy showLineNumbers filename="typescript"
 //src/main.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -216,7 +216,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 For your `protected` routes use `AuthContext` to protect routes from
 unauthroized access.
 
-```tsx
+```typescript copy showLineNumbers filename="typescript"
 //protected-route.tsx
 
 function ProtectedRoute(){
